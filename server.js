@@ -1,11 +1,11 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// 静的ファイルを全部配信
-app.use(express.static(__dirname, {
+app.use(express.static(path.join(__dirname, "site"), {
     etag: false,
     lastModified: false,
     setHeaders: (res) => {
@@ -41,6 +41,10 @@ app.post("/capture", async (req, res) => {
     }
 
     res.json({ status: "ok" });
+});
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "site/index.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {

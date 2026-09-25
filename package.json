@@ -7,5 +7,21 @@
   },
   "dependencies": {
     "express": "^4.18.2"
-  }
+  },
+  "description": "",
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rya879259-afk/aaaa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rya879259-afk/aaaa/issues"
+  },
+  "homepage": "https://github.com/rya879259-afk/aaaa#readme"
 }
